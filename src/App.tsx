@@ -82,7 +82,9 @@ const App: React.FC = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
       <div className="max-w-md w-full bg-white p-4 rounded-md shadow-md">
-        <h1 className="text-2xl font-bold mb-4">QRコードジェネレーター For Fediverse</h1>
+        <h1 className="text-2xl font-bold mb-4">
+          QRコードジェネレーター For Fediverse
+        </h1>
         <h2 className="text-xl font-bold">URLを入力</h2>
         <input
           type="text"
@@ -193,6 +195,16 @@ const App: React.FC = () => {
 
         <div className="flex justify-center mt-4">
           <div id="qr-container"></div>
+        </div>
+        <div className="flex justify-center">
+          <a
+            href="https://github.com/naaaaaaaaaaaf/FediQRGen"
+            target="_blank"
+            rel="noreferrer"
+            className="mt-4 text-gray-500 hover:underline flex items-center"
+          >
+            ソースコード
+          </a>
         </div>
       </div>
     </div>
