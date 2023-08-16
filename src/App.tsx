@@ -199,7 +199,7 @@ const App: React.FC = () => {
           role="alert"
         >
           <span className="block sm:inline">
-            生成したQRコードは数秒後にQRコードをダウンロードできるようになります。
+            生成したQRコードは数秒後にダウンロードできるようになります。
           </span>
         </div>
         <button
