@@ -23,6 +23,7 @@ const presets = {
 const App: React.FC = () => {
   const [url, setUrl] = useState<string>("");
 
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [dotColor, setDotColor] = useState<string>("#4267b2");
   const [dotType, setDotType] = useState<string>("rounded");
   const [backgroundColor, setBackgroundColor] = useState<string>("#e9ebee");
@@ -43,22 +44,12 @@ const App: React.FC = () => {
     setShowCustomOptions((prevState) => !prevState);
   };
 
-  const generateQRCode = () => {
-    let selectedImage: string | undefined;
-
-    if (imageOption === "mastodon") {
-      selectedImage = "image/mastodon.svg";
-    } else if (imageOption === "misskey") {
-      selectedImage = "image/misskey.png";
-    } else if (imageOption === "custom") {
-      selectedImage = customImageUrl;
-    }
-
+  const createAndAppendQRCode = (imagePath: string | undefined) => {
     const qrCode = new QRCodeStyling({
       width: 300,
       height: 300,
       data: url,
-      image: selectedImage,
+      image: imagePath,
       dotsOptions: {
         color: dotColor,
         type: dotType as DotType,
@@ -77,6 +68,7 @@ const App: React.FC = () => {
       container.innerHTML = "";
       qrCode.append(container);
     }
+
     setTimeout(() => {
       if (container) {
         const canvas = container.querySelector("canvas");
@@ -93,6 +85,34 @@ const App: React.FC = () => {
         }
       }
     }, 500);
+  };
+
+  const generateQRCode = () => {
+    let selectedImage: string | undefined;
+
+    if (imageOption === "mastodon") {
+      selectedImage = "image/mastodon.svg";
+      createAndAppendQRCode(selectedImage);
+    } else if (imageOption === "misskey") {
+      selectedImage = "image/misskey.png";
+      createAndAppendQRCode(selectedImage);
+    } else if (imageOption === "custom") {
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.src = customImageUrl;
+      img.onload = () => {
+        selectedImage = customImageUrl;
+        createAndAppendQRCode(selectedImage);
+      };
+      img.onerror = () => {
+        setErrorMessage(
+          "カスタム画像URLの読み込みに失敗しました。URLを確認してください。※画像のCORS設定により、読み込めない場合があります。"
+        );
+        return;
+      };
+    } else {
+      createAndAppendQRCode(undefined);
+    }
   };
 
   return (
@@ -208,7 +228,20 @@ const App: React.FC = () => {
         >
           QRコードを生成
         </button>
-
+        {errorMessage && (
+          <div
+            className="bg-red-100 border border-red-400 text-red-700 mt-4 mb-4 px-4 py-3 rounded relative flex items-center"
+            role="alert"
+          >
+            <div className="flex-grow">{errorMessage}</div>
+            <button
+              onClick={() => setErrorMessage(null)}
+              className="ml-auto px-4 py-3"
+            >
+              ✖️
+            </button>
+          </div>
+        )}
         <div className="flex justify-center mt-4">
           <div id="qr-container"></div>
         </div>
