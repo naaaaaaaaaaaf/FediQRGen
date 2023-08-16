@@ -77,6 +77,22 @@ const App: React.FC = () => {
       container.innerHTML = "";
       qrCode.append(container);
     }
+    setTimeout(() => {
+      if (container) {
+        const canvas = container.querySelector("canvas");
+        if (canvas) {
+          const dataUrl = canvas.toDataURL();
+          const downloadLink = document.getElementById(
+            "qr-download-link"
+          ) as HTMLAnchorElement;
+          if (downloadLink) {
+            downloadLink.href = dataUrl;
+            downloadLink.download = "qr-code.png";
+            downloadLink.style.display = "block";
+          }
+        }
+      }
+    }, 500);
   };
 
   return (
@@ -183,7 +199,7 @@ const App: React.FC = () => {
           role="alert"
         >
           <span className="block sm:inline">
-            生成したQRコードはスマホの場合長押しで、PCの場合は右クリックから「名前を付けて画像を保存」で保存をすることができます。
+            生成したQRコードは数秒後にQRコードをダウンロードできるようになります。
           </span>
         </div>
         <button
@@ -196,6 +212,15 @@ const App: React.FC = () => {
         <div className="flex justify-center mt-4">
           <div id="qr-container"></div>
         </div>
+        <a
+          id="qr-download-link"
+          href="#"
+          download="qr-code.png"
+          style={{ display: "none" }}
+          className="w-full mt-4 mr-2 px-4 py-2 bg-green-500 text-center text-white rounded hover:bg-green-600"
+        >
+          QRコードをダウンロード
+        </a>
         <div className="flex justify-center">
           <a
             href="https://github.com/naaaaaaaaaaaf/FediQRGen"
